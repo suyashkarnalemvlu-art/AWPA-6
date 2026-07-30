@@ -1,0 +1,43 @@
+manifest.json
+{
+  "name": "HTML TO PWA",
+  "short_name": "HTP",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "icons/icon11.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon12.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
+service.worker
+const CACHE = "v1";
+
+self.addEventListener("install", e => {
+    e.waitUntil(caches.open(CACHE).then(cache => {
+        return cache.addAll([
+            "/",
+            "/offline.html"
+
+        ]);
+    })
+    );
+    console.log("Service workers installed");
+});
+
+self.addEventListener("fetch", (e) => {
+    e.respondWith(
+        fetch(e.request).catch(() => {
+            return caches.match("/offline.html");
+        })
+    );
+});
